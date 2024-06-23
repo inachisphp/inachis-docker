@@ -1,0 +1,67 @@
+services:
+  php:
+    build: ./docker/php
+    restart: unless-stopped
+    container_name: '${APP_NAME}_php'
+    tty: true
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks:
+      - docker.network
+    volumes:
+#      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      - .:/var/www/inachis
+
+  apache:
+    build: ./docker/apache
+    restart: unless-stopped
+    container_name: '${APP_NAME}_apache'
+    tty: true
+    depends_on:
+      - php
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - docker.network
+    volumes:
+      - .:/var/www/inachis
+#      - ./docker/web/sites-enabled:/etc/apache2/sites-enabled
+
+# changes to the below require db to be rebuilt (remove data directory contents)
+  mariadb:
+    image: mariadb:latest
+    container_name: '${APP_NAME}_db'
+    restart: unless-stopped
+    environment:
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+      MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MARIADB_DATABASE: ${MYSQL_DATABASE:-inachis}
+      MARIADB_USER: ${MYSQL_USER:-inachis}
+      MARIADB_PASSWORD: ${MYSQL_PASSWORD:-Secret123}
+    volumes:
+      - mysqldata:/var/lib/mysql
+    ports:
+      - 33016:3306
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "healthcheck.sh",
+          "--su-mysql",
+          "--connect",
+          "--innodb_initialized"
+        ]
+      interval: 30s
+      retries: 3
+      timeout: 30s
+    networks:
+      - docker.network
+
+volumes:
+  mysqldata: {}
+
+networks:
+  docker.network:
+    driver: bridge
