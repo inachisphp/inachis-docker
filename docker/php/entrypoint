@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+# composer install -o --working-dir="$WORKDIR"
+
+$WORKDIR/bin/console doctrine:schema:create
+$WORKDIR/bin/console doctrine:migrations:migrate
+
+php-fpm
