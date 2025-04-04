@@ -9,6 +9,7 @@ It will use environment variables from your site to name the containers, and to 
 ```
 APP_ENV=dev
 APP_NAME=mytestsite
+TZ="Europe/London"
 
 …
 
@@ -18,4 +19,10 @@ MYSQL_DATABASE="mysite_db"
 MYSQL_USER="username"
 MYSQL_PASSWORD="$ecreT123"
 MYSQL_ROOT_PASSWORD=""
+```
+
+If you decide to use a domain other than `inachis.dev` for your local development, then you will need to regenerate the certificate and key using:
+
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt
 ```
