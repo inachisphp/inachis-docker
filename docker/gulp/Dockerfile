@@ -1,7 +1,13 @@
 FROM node:current-slim
 
-RUN apt-get update
-RUN npm install -g gulp
-
 WORKDIR /var/www/inachis
-CMD ["gulp", "watch"]
+
+RUN npm install -g gulp-cli
+RUN apt-get update
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+CMD ["gulp"]
