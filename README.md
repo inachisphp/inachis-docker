@@ -21,7 +21,7 @@ MYSQL_PASSWORD="$ecreT123"
 MYSQL_ROOT_PASSWORD=""
 ```
 
-If you decide to use a domain other than `inachis.dev` for your local development, then you will need to regenerate the certificate and key using:
+If you decide to use a domain other than `inachis.dev` for your local development, then you will need to update the URL in `docker/apache/httpd-ssl.conf`. The `server.cert` and `server.key` files are empty and will need replacing with you own, such as generatinh a self-signed certificate and key using:
 
 ```bash
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt
