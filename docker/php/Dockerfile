@@ -1,5 +1,5 @@
 # From
-FROM php:8.3.4-fpm-alpine3.19
+FROM php:8.4.14-fpm-alpine3.22
 
 # Set timezone
 ENV TZ=${TZ:-UTC}
@@ -41,7 +41,6 @@ RUN set -eux \
   sysvsem \
   sysvshm \
   opcache \
-  imap \
   gmp \
   \
   # Install xdebug
